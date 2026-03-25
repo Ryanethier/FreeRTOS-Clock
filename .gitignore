@@ -1,0 +1,16 @@
+# PlatformIO build artifacts
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# VS Code
+.vscode/
+
+# Credentials — never commit this
+include/config.h
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
