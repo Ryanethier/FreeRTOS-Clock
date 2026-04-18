@@ -19,6 +19,7 @@ QueueHandle_t timeQueue;
 void taskTimekeeping(void *pvParameters);
 void taskDisplay(void *pvParameters);
 void taskNTPSync(void *pvParameters);
+void taskButtonInput(void *pvParameters);
 
 // ---------------------------------------------------------------------------
 // Setup & loop
@@ -40,7 +41,7 @@ void setup() {
     xTaskCreate(taskNTPSync,     "NTPSync",     4096, NULL, 3, NULL);
     xTaskCreate(taskTimekeeping, "Timekeeping", 2048, NULL, 2, NULL);
     xTaskCreate(taskDisplay,     "Display",     2048, NULL, 1, NULL);
-
+    xTaskCreate(taskButtonInput, "ButtonInput", 2048, NULL, 2, NULL);
     Serial.println("[boot] All tasks created. Scheduler running.");
 }
 
