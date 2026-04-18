@@ -6,12 +6,10 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/queue.h>
+#include "config.h"
 
 #define CLK 22
 #define DIO 23
-#define WIFI_SSID     "The Thornton"
-#define WIFI_PASSWORD "BrandyAliceRyan502!"
-#define NTP_OFFSET    -18000  // UTC-6 Chicago
 
 TM1637Display display(CLK, DIO);
 QueueHandle_t timeQueue;
