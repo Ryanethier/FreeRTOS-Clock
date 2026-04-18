@@ -6,10 +6,10 @@ An ESP32-based digital clock built with FreeRTOS for an Operating Systems final 
 
 | Component | Part | Notes |
 |---|---|---|
-| Microcontroller | ESP32 DevKit (any variant) | |
+| Microcontroller | ESP32 DevKit | |
 | Display | TM1637 4-digit 7-segment | CLK → GPIO 22, DIO → GPIO 23 |
-| Hour button | Momentary push button | GPIO 18 → GND |
-| Minute button | Momentary push button | GPIO 19 → GND |
+| Hour button | Momentary push button | GPIO 4 → GND |
+| Minute button | Momentary push button | GPIO 5 → GND |
 | Buzzer | Passive buzzer (optional) | GPIO 21 |
 
 All GPIO assignments can be changed in `include/config.h`.
@@ -42,45 +42,9 @@ The firmware uses four FreeRTOS tasks:
 
 Time is stored in a shared `ClockTime` struct protected by a FreeRTOS mutex. The timekeeping task posts snapshots to a queue so the display task never blocks the tick.
 
-## Getting Started
 
-### 1. Install Prerequisites
 
-- [VS Code](https://code.visualstudio.com/)
-- [PlatformIO IDE extension](https://platformio.org/install/ide?install=vscode) for VS Code
-
-PlatformIO will automatically download the ESP32 toolchain and all libraries the first time you build.
-
-### 2. Clone the Repo
-
-```bash
-git clone https://github.com/your-username/freertos-clock.git
-cd freertos-clock
-```
-
-### 3. Configure Wi-Fi and Settings
-
-Copy the example config and fill in your details:
-
-```bash
-cp include/config.h.example include/config.h
-```
-
-Then open `include/config.h` and set:
-
-```c
-#define WIFI_SSID     "your_wifi_ssid"
-#define WIFI_PASSWORD "your_wifi_password"
-#define NTP_OFFSET    -21600   // UTC offset in seconds
-                               // UTC-6 = -21600  (Chicago)
-                               // UTC-5 = -18000  (New York)
-                               // UTC+0 =  0      (London)
-                               // UTC+1 =  3600   (Paris)
-```
-
-> **Note:** `config.h` is listed in `.gitignore` so your Wi-Fi credentials will never be committed to GitHub.
-
-### 4. Build and Flash
+### Build and Flash
 
 1. Open the project folder in VS Code
 2. Click the **PlatformIO: Build** button (checkmark icon in the bottom toolbar)
@@ -90,7 +54,7 @@ Then open `include/config.h` and set:
 
 On first boot the clock will show `----` while connecting to Wi-Fi, then switch to the current time once NTP sync completes.
 
-### 5. Setting the Time Manually
+### Setting the Time Manually
 
 If Wi-Fi is unavailable, use the buttons:
 - **Hour button:** increments the hour
