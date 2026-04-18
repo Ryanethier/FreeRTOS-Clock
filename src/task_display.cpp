@@ -5,7 +5,7 @@
 #include <TM1637Display.h>
 #include "config.h"
 
-extern QueueHandle_t timeQueue;
+#include "shared.h"
 
 // ---------------------------------------------------------------------------
 // Display Task

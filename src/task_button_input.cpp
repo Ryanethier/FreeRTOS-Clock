@@ -3,9 +3,7 @@
 #include <freertos/task.h>
 #include <freertos/semphr.h>
 #include "config.h"
-
-extern struct ClockTime currentTime;
-extern SemaphoreHandle_t timeMutex;
+#include "shared.h"
 
 // ---------------------------------------------------------------------------
 // Button Input Task

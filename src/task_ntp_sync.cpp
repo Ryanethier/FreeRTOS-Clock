@@ -7,8 +7,7 @@
 #include <WiFiUdp.h>
 #include "config.h"
 
-extern struct ClockTime currentTime;
-extern SemaphoreHandle_t timeMutex;
+#include "shared.h"
 
 // ---------------------------------------------------------------------------
 // NTP Sync Task
@@ -27,7 +26,7 @@ static bool connectWiFi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
     int retries = 0;
-    while (WiFi.status() != WL_CONNECTED && retries < 20) {
+    while (WiFi.status() != WL_CONNECTED && retries < 40) {
         vTaskDelay(pdMS_TO_TICKS(500));
         Serial.print(".");
         retries++;

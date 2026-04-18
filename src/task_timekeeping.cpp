@@ -5,10 +5,7 @@
 #include <freertos/semphr.h>
 #include "config.h"
 
-// Defined in main.cpp
-extern struct ClockTime currentTime;
-extern SemaphoreHandle_t timeMutex;
-extern QueueHandle_t timeQueue;
+#include "shared.h"
 
 // ---------------------------------------------------------------------------
 // Timekeeping Task
