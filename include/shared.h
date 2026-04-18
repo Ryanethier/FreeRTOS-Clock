@@ -18,3 +18,4 @@ struct ClockTime {
 extern ClockTime currentTime;
 extern SemaphoreHandle_t timeMutex;
 extern QueueHandle_t timeQueue;
+extern bool ntpSynced;

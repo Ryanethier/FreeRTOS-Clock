@@ -12,7 +12,7 @@
 ClockTime currentTime = {0, 0, 0};
 SemaphoreHandle_t timeMutex;
 QueueHandle_t timeQueue;
-
+bool ntpSynced = false;
 // ---------------------------------------------------------------------------
 // Task prototypes
 // ---------------------------------------------------------------------------

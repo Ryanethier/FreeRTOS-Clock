@@ -43,6 +43,7 @@ static bool connectWiFi() {
 }
 
 static void syncTimeFromNTP() {
+    ntpSynced = true;
     timeClient.update();
 
     if (xSemaphoreTake(timeMutex, pdMS_TO_TICKS(100)) == pdTRUE) {

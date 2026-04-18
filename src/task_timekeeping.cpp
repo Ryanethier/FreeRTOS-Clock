@@ -15,6 +15,12 @@ void taskTimekeeping(void *pvParameters) {
     TickType_t lastWakeTime = xTaskGetTickCount();
     const TickType_t interval = pdMS_TO_TICKS(1000);
 
+    while (!ntpSynced) {
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+
+    Serial.println("[timekeeping] NTP Synced, starting clock");
+
     for (;;) {
         vTaskDelayUntil(&lastWakeTime, interval);
 
