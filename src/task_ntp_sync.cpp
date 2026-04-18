@@ -6,7 +6,6 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include "config.h"
-
 #include "shared.h"
 
 // ---------------------------------------------------------------------------
@@ -14,8 +13,8 @@
 //
 // On boot: connects to Wi-Fi and queries an NTP server to set the initial time.
 // After that: re-syncs every NTP_INTERVAL ms to correct any drift.
-// If Wi-Fi is unavailable, logs a warning and lets the timekeeping task
-// carry on with whatever time it has (or 00:00:00 if never synced).
+// If Wi-Fi is unavailable, falls back to 12:00 and lets the timekeeping
+// task carry on.
 // ---------------------------------------------------------------------------
 
 static WiFiUDP ntpUDP;
@@ -23,6 +22,7 @@ static NTPClient timeClient(ntpUDP, NTP_SERVER, NTP_OFFSET);
 
 static bool connectWiFi() {
     Serial.printf("[ntp] Connecting to Wi-Fi: %s\n", WIFI_SSID);
+    WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
     int retries = 0;
@@ -34,10 +34,10 @@ static bool connectWiFi() {
     Serial.println();
 
     if (WiFi.status() == WL_CONNECTED) {
-        Serial.printf("[ntp] Connected. IP: %s\n", WiFi.localIP().toString().c_str());
+        Serial.printf("[ntp] Connected! IP: %s\n", WiFi.localIP().toString().c_str());
         return true;
     } else {
-        Serial.println("[ntp] WARNING: Wi-Fi connection failed. Clock will run without NTP sync.");
+        Serial.println("[ntp] WARNING: Wi-Fi failed. Starting at 12:00.");
         return false;
     }
 }
@@ -45,16 +45,13 @@ static bool connectWiFi() {
 static void syncTimeFromNTP() {
     timeClient.update();
 
-    uint8_t h = timeClient.getHours();
-    uint8_t m = timeClient.getMinutes();
-    uint8_t s = timeClient.getSeconds();
-
     if (xSemaphoreTake(timeMutex, pdMS_TO_TICKS(100)) == pdTRUE) {
-        currentTime.hours   = h;
-        currentTime.minutes = m;
-        currentTime.seconds = s;
+        currentTime.hours   = timeClient.getHours();
+        currentTime.minutes = timeClient.getMinutes();
+        currentTime.seconds = timeClient.getSeconds();
         xSemaphoreGive(timeMutex);
-        Serial.printf("[ntp] Time synced: %02d:%02d:%02d\n", h, m, s);
+        Serial.printf("[ntp] Time synced: %02d:%02d:%02d\n",
+            currentTime.hours, currentTime.minutes, currentTime.seconds);
     } else {
         Serial.println("[ntp] WARNING: Could not acquire mutex for time update");
     }
@@ -64,6 +61,11 @@ void taskNTPSync(void *pvParameters) {
     if (connectWiFi()) {
         timeClient.begin();
         syncTimeFromNTP();
+    } else {
+        if (xSemaphoreTake(timeMutex, pdMS_TO_TICKS(100)) == pdTRUE) {
+            currentTime = {12, 0, 0};
+            xSemaphoreGive(timeMutex);
+        }
     }
 
     // Re-sync periodically
