@@ -42,18 +42,6 @@ The firmware uses four FreeRTOS tasks:
 
 Time is stored in a shared `ClockTime` struct protected by a FreeRTOS mutex. The timekeeping task posts snapshots to a queue so the display task never blocks the tick.
 
-
-
-### Build and Flash
-
-1. Open the project folder in VS Code
-2. Click the **PlatformIO: Build** button (checkmark icon in the bottom toolbar)
-3. Connect your ESP32 over USB
-4. Click **PlatformIO: Upload** (right arrow icon)
-5. Open the Serial Monitor (plug icon) at 115200 baud to see boot logs
-
-On first boot the clock will show `----` while connecting to Wi-Fi, then switch to the current time once NTP sync completes.
-
 ### Setting the Time Manually
 
 If Wi-Fi is unavailable, use the buttons:
@@ -65,10 +53,9 @@ If Wi-Fi is unavailable, use the buttons:
 ```
 freertos-clock/
 ├── include/
-│   ├── config.h.example    # Copy to config.h and fill in your credentials
-│   └── config.h            # Your local config (gitignored)
+│   └── config.h            # local config (gitignored)
 ├── src/
-│   ├── main.cpp            # Setup, task creation, shared state
+│   ├── main.cpp            
 │   ├── task_timekeeping.cpp
 │   ├── task_display.cpp
 │   ├── task_ntp_sync.cpp
